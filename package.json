@@ -1,0 +1,29 @@
+{
+  "name": "youtubewatchbot",
+  "version": "1.0.0",
+  "description": "Youtube watch time bot, like bot, comment bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JijaProGamer/youtubeWatchBot.git"
+  },
+  "keywords": [
+    "youtube",
+    "bot",
+    "watchtime",
+    "views"
+  ],
+  "author": "Bloxxy213",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JijaProGamer/youtubeWatchBot/issues"
+  },
+  "homepage": "https://github.com/JijaProGamer/youtubeWatchBot#readme",
+  "dependencies": {
+    "puppeteer-core": "^19.2.2",
+    "puppeteer-extra": "^3.3.4"
+  }
+}
