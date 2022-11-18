@@ -2,6 +2,9 @@ const puppeteer = require("puppeteer-extra")
 const path = require("path")
 
 const ublockPath = path.join(__dirname, "extensions/uBlock0.chromium")
+const executablePath = `C:\\Users\\bloxx\\Downloads\\chrome-win\\chrome-win\\chrome.exe`
+
+let currentSize = 0
 
 puppeteer.launch({
     defaultViewport: null,
@@ -9,21 +12,20 @@ puppeteer.launch({
         `--start-maximized`, 
         `--mute-audio`, `--disable-extensions-except=${ublockPath}`, `--load-extension=${ublockPath}`,
         `--proxy-server=bloxxy213.asuscomm.com:31280`,
-        `--user-data-dir=${path.join(__dirname, "/testUserDataDir")}`,
+        //`--user-data-dir=${path.join(__dirname, "/testUserDataDir")}`,
     ],
     ignoreDefaultArgs: true,
-    headless: false,
-    executablePath: process.platform === "win32" && "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" || `/usr/bin/google-chrome`,
+    headless: true,
+    executablePath: executablePath
 }).then(async (browser) => {
     const page = await browser.newPage();
     await page.setRequestInterception(true)
 
-    let currentSize = 0
     let bannedResourceTypes = ["image", "font", "other"]
 
     page.on('request', (request) => {
         let url = request.url()
-        let resourceType = request.resourceType()
+        /*let resourceType = request.resourceType()
 
         if(bannedResourceTypes.includes(resourceType)) return request.abort()
 
@@ -38,7 +40,7 @@ puppeteer.launch({
 
         if(url.includes("/ads")){
             return request.abort()
-        }
+        }*/
 
         request.continue()
     })
