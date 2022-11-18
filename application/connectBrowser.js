@@ -22,8 +22,7 @@ function connectBrowser(headless, executablePath, extra) {
     let dataEvent = new EventEmitter()
     let extensions = []
 
-    if(extra?.proxyServer) extensions.push(`--proxy-server=${extra?.proxyServer}`)
-    if(extra?.userDataDir) extensions.push(`--user-data-dir=${extra?.userDataDir}`)
+    if(extra?.userDataDir) extensions.push(`--user-data-dir=${extra.userDataDir}`)
 
     let extensionFolder = fs.readdirSync(path.join(__dirname, "../extensions")).map(value => value = path.join(__dirname, `../extensions/${value}`))
     extensions.push(`--disable-extensions-except=${extensionFolder.join(",")}`)
@@ -47,11 +46,16 @@ function connectBrowser(headless, executablePath, extra) {
                     `--mute-audio`,
                     ...extensions,
                     `--always-authorize-plugins`,
+                    `--disable-gpu`,
+                    '--proxy-bypass-list=*',
+                    `--proxy-server=${extra.proxyServer || "direct://"}`,
+                    `--disable-web-security`, `--ignore-certificate-errors`,
                 ],
                 ignoreDefaultArgs: true,
                 headless: true,
                 executablePath: executablePath,
-                ignoreHTTPSErrors: true
+                ignoreHTTPSErrors: true,
+                browserWSEndpoint: extra.browserWSEndpoint,
             }).then((browser) => {
                 this.__handled = true
                 this.__launched = true
