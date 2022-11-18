@@ -1,8 +1,16 @@
 const puppeteer = require("puppeteer-extra")
+const path = require("path")
+
+const ublockPath = path.join(__dirname, "extensions/uBlock0.chromium")
 
 puppeteer.launch({
     defaultViewport: null,
-    args: [`--start-maximized`, `--mute-audio`],
+    args: [
+        `--start-maximized`, 
+        `--mute-audio`, `--disable-extensions-except=${ublockPath}`, `--load-extension=${ublockPath}`,
+        `--proxy-server=bloxxy213.asuscomm.com:31280`,
+        `--user-data-dir=${path.join(__dirname, "/testUserDataDir")}`,
+    ],
     ignoreDefaultArgs: true,
     headless: false,
     executablePath: process.platform === "win32" && "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe" || `/usr/bin/google-chrome`,
@@ -32,7 +40,6 @@ puppeteer.launch({
             return request.abort()
         }
 
-        //console.log(request.headers())
         request.continue()
     })
 
@@ -47,7 +54,7 @@ puppeteer.launch({
         console.log(`${currentSize / 1e+6 } megabits`)
     });
     
-    await page.goto(`https://www.youtube.com/watch?v=2Oz5k_SASxU`, {waitUntil: "networkidle2"})
+    await page.goto(`https://www.youtube.com/watch?v=mfNKDcDDGog`, {waitUntil: "networkidle2"})
 
     await page.evaluate(() => {
         setInterval(() => {
