@@ -19,7 +19,10 @@ let runApp = async (index) => {
 
     //browserConnection.data.on("debug", console.log)
     browserConnection.data.on("pageMessage", console.log)
-    browserConnection.data.on("bandwithUsed", (bandwith) => {bandwithUsed += bandwith, console.log(`${bandwithUsed * 1e-6}mb`)})
+    browserConnection.data.on("bandwithUsed", (bandwith) => {
+        bandwithUsed += bandwith
+        //console.log(`${bandwithUsed * 1e-6}mb`)
+    })
     
     //browserConnection.data.on("pageError", console.log)
     //browserConnection.data.on("debug", console.log)
@@ -36,7 +39,7 @@ let runApp = async (index) => {
         }, 250)
     })
 
-    await page.goto("https://www.youtube.com/watch?v=YLslsZuEaNE", {waitUntil: "networkidle0"})
+    await page.goto("https://www.youtube.com/watch?v=VmqjnP98wfM", {waitUntil: "networkidle0"})
     await confirmNavigation(page)
 
     //let playButton = await waitForSelector(page, `#movie_player > div.ytp-cued-thumbnail-overlay > button`)
@@ -54,12 +57,16 @@ let runApp = async (index) => {
 
     await clickSelector(page, `.ytp-right-controls > button:nth-child(1)`)
 
+    await sleep(1000)
     await page.evaluate(() => {
         document.getElementsByClassName("ytp-panel-menu")[0].lastChild.click()
     })
 
-    await page.evaluate((b) => {
+    await sleep(1000)
+
+    await page.evaluate(() => {
         let items = Array.from(document.getElementsByClassName("ytp-menuitem"))
+
         items[items.length - 2].click()
     })
 
@@ -71,7 +78,7 @@ let runApp = async (index) => {
     let interval = setInterval(async () => {
         let time = await page.evaluate((e) => Math.floor(e.currentTime), videoElement)
     
-        if(time > 60 * 1){
+        if(time > 60 * 9){
             console.log(time, bandwithUsed)
             clearInterval(interval)
             //await browser.close()
@@ -79,11 +86,11 @@ let runApp = async (index) => {
     }, 1000)
 }
 
-runApp(1)
+//runApp(1)
 
 for (let i = 0; i < 10; i += 2){
     setTimeout(async () => {
-        //runApp(i + 1)
-        //runApp(i + 2)
+        runApp(i + 1)
+        runApp(i + 2)
     }, i * 10 * 1000)
 }

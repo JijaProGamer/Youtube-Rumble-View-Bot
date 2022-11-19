@@ -39,13 +39,30 @@ You can use it as a CLI, as a simple program or by using its API, with controll 
  * You should include search too, youtube may see users are bots if most of the views are direct links
  * Rotating proxies should use the same IP for one session, so set it as a sticky session
 
-# Bandwith usage (Download) NOTE: saveBandwith set to true in all the tests
- * No userDataDir, direct watch: ~10 megabits page load and init
- * userDataDir, direct watch: ~0.8 to ~3.3 megabits page load and init
- * 10 minutes of video watching: ~16.35 mbits (Not including page load and init) 
- * 1 minute of video watching: ~2.1 mbits (Not including page load and init) 
- 
-## Total bandwith for worst-case no optimization scenario (10 minutes): ~26.35 mbits
-## Total bandwith for best-case scenario (10 minutes video): ~17.85 mbits
-## Total bandwith for worst-case scenario (No cache and search): 
-## Total bandwith for best-case scenario (Cache and search):
+# Bandwith usage
+## Bandwith for initializing youtube
+ * No cache direct watch: 7-12 mbits
+ * Cache and direct watch: 0.8-3 mbits
+ * direct watch (10 minutes): ~16.35 mbits
+ * search + load: ~
+ *
+
+## Bandwith usage based on duration
+ * 10 minutes: ~16.35 mbits
+ * 1 minute: ~2.1 mbits
+ * 5 minutes: ~
+ * 25 minutes: ~ mbits
+
+## Bandwith usage
+ ###### Loading the pages
+  - log in with cache:
+  - log in with no cache:
+  - watch page with no cache: ~11 mbits
+  - watch page with cache: 0.8-3.3 mbits
+  - search page with no cache:
+  - search page with cache:
+ ###### Video watching
+  - 1 minute video: ~3.3 mbits
+  - 5 minutes video: ~ mbits
+  - 10 minutes video: ~16.35 mbits
+  - 30 minutes video: ~ mbits

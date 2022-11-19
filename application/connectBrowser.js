@@ -55,8 +55,6 @@ function connectBrowser(executablePath, extra) {
 
             dataEvent.emit("debug", `Launching browser with external arguments ${JSON.stringify(launchArguments)}`)
 
-            console.log(launchArguments)
-
             if(extra.browserWSEndpoint){
                 puppeteer.connect(launchArguments).then((browser) => {
                     this.__handled = true
