@@ -21,7 +21,7 @@ puppeteer.use(plugin_stealth())
 function connectBrowser(executablePath, extra) {
     let dataEvent = new EventEmitter()
     let extensionFolder = fs.readdirSync(path.join(__dirname, "../extensions")).map(value => value = path.join(__dirname, `../extensions/${value}`))
-
+    
     return {
         browser: () => new Promise((resolve, reject) => {
             this.data = dataEvent
@@ -42,10 +42,11 @@ function connectBrowser(executablePath, extra) {
                 executablePath: executablePath,
                 ignoreHTTPSErrors: true,
                 browserWSEndpoint: extra.browserWSEndpoint,
+                userDataDir: extra.userDataDir,
             }
 
             if(extra.args) launchArguments.args = [...launchArguments.args, ...extra.args]
-            if(extra.userDataDir) launchArguments.args.push(`--user-data-dir=${extra.userDataDir}`)
+            //if(extra.userDataDir) launchArguments.args.push(`--user-data-dir=${extra.userDataDir}`)
             launchArguments.args.push(`--disable-extensions-except=${extensionFolder.join(",")}`)
         
             extensionFolder.forEach((extension) => {
@@ -53,6 +54,8 @@ function connectBrowser(executablePath, extra) {
             })
 
             dataEvent.emit("debug", `Launching browser with external arguments ${JSON.stringify(launchArguments)}`)
+
+            console.log(launchArguments)
 
             if(extra.browserWSEndpoint){
                 puppeteer.connect(launchArguments).then((browser) => {

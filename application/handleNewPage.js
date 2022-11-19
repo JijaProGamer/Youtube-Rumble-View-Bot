@@ -16,6 +16,7 @@ function handleNewPage() {
         const session = await page.target().createCDPSession();
         await session.send('Page.enable');
         await session.send('Page.setWebLifecycleState', { state: 'active' });
+        await session.send('Network.clearBrowserCookies');
 
         this.data.emit(`debug`, `Spoofed new page`)
 

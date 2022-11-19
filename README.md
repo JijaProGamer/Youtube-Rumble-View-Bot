@@ -38,4 +38,14 @@ You can use it as a CLI, as a simple program or by using its API, with controll 
 # Rules
  * You should include search too, youtube may see users are bots if most of the views are direct links
  * Rotating proxies should use the same IP for one session, so set it as a sticky session
- * Headless mode is supported, but it has no bot prevendion and you cannot use extensions (No adblocker and custom extensions)
+
+# Bandwith usage (Download) NOTE: saveBandwith set to true in all the tests
+ * No userDataDir, direct watch: ~10 megabits page load and init
+ * userDataDir, direct watch: ~0.8 to ~3.3 megabits page load and init
+ * 10 minutes of video watching: ~16.35 mbits (Not including page load and init) 
+ * 1 minute of video watching: ~2.1 mbits (Not including page load and init) 
+ 
+## Total bandwith for worst-case no optimization scenario (10 minutes): ~26.35 mbits
+## Total bandwith for best-case scenario (10 minutes video): ~17.85 mbits
+## Total bandwith for worst-case scenario (No cache and search): 
+## Total bandwith for best-case scenario (Cache and search):

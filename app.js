@@ -10,16 +10,16 @@ let {
     jiggleMouse, confirmNavigation} = require("./application/publicFunctions.js")
 
 let runApp = async (index) => {
-    let browserConnection = api.connectBrowser(false, "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", {
+    let browserConnection = api.connectBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", {
         //browserWSEndpoint: "wss://chrome.browserless.io?token=",
-        proxyServer: "bloxxy213.asuscomm.com:31280",
+        //proxyServer: "bloxxy213.asuscomm.com:31280",
         userDataDir: path.join(__dirname, `/testUserDataDir/${index}`),
         saveBandwith: true,
     })
 
     //browserConnection.data.on("debug", console.log)
     browserConnection.data.on("pageMessage", console.log)
-    //browserConnection.data.on("bandwithUsed", (bandwith) => {bandwithUsed += bandwith, console.log(`${bandwithUsed * 1e-6}mb`)})
+    browserConnection.data.on("bandwithUsed", (bandwith) => {bandwithUsed += bandwith, console.log(`${bandwithUsed * 1e-6}mb`)})
     
     //browserConnection.data.on("pageError", console.log)
     //browserConnection.data.on("debug", console.log)
@@ -36,7 +36,7 @@ let runApp = async (index) => {
         }, 250)
     })
 
-    await page.goto("https://www.youtube.com/watch?v=FCGvDqcetNY", {waitUntil: "networkidle0"})
+    await page.goto("https://www.youtube.com/watch?v=YLslsZuEaNE", {waitUntil: "networkidle0"})
     await confirmNavigation(page)
 
     //let playButton = await waitForSelector(page, `#movie_player > div.ytp-cued-thumbnail-overlay > button`)
@@ -71,9 +71,10 @@ let runApp = async (index) => {
     let interval = setInterval(async () => {
         let time = await page.evaluate((e) => Math.floor(e.currentTime), videoElement)
     
-        if(time > 2){
+        if(time > 60 * 1){
+            console.log(time, bandwithUsed)
             clearInterval(interval)
-            await browser.close()
+            //await browser.close()
         }
     }, 1000)
 }
