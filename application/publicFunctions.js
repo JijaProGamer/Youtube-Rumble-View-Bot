@@ -145,18 +145,12 @@ const confirmNavigation = (page) => {
 }
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+const random = (min, max) => min + Math.floor(Math.random() * (max - min));
 
 module.exports = {
-    uploadFileXPath,
-    uploadFileSelector,
-    clickSelector,
-    clickXPath,
-    goto,
-    waitForSelector,
-    jiggleMouse,
+    uploadFileXPath, waitForXPath, clickXPath, typeXPath,
+    uploadFileSelector, waitForSelector, clickSelector, typeSelector,
+    goto, jiggleMouse,
     confirmNavigation,
-    waitForXPath,
-    typeSelector,
-    typeXPath,
-    sleep,
+    sleep, random
 }
