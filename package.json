@@ -25,6 +25,7 @@
   "dependencies": {
     "puppeteer-core": "^19.2.2",
     "puppeteer-extra": "^3.3.4",
-    "puppeteer-extra-plugin-stealth": "^2.11.1"
+    "puppeteer-extra-plugin-stealth": "^2.11.1",
+    "ytdl-core": "^4.11.2"
   }
 }

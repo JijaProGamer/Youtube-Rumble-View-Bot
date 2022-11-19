@@ -10,7 +10,7 @@ let {
 
 let runApp = async (index) => {
     let browserConnection = api.connectBrowser("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", {
-        browserWSEndpoint: "wss://chrome.browserless.io?token=3ef2a4af-925a-4165-9371-b4b850790f88",
+        //browserWSEndpoint: "wss://chrome.browserless.io?",
         //proxyServer: "bloxxy213.asuscomm.com:31280",
         userDataDir: path.join(__dirname, `/testUserDataDir/${index}`),
         saveBandwith: true,
@@ -29,30 +29,20 @@ let runApp = async (index) => {
     let browser = await browserConnection.browser()
     let page = await api.handleNewPage()
 
+    await sleep(100000000)
     await page.goto("https://www.youtube.com/watch?v=bdAzFR3JzLg", {waitUntil: "networkidle0"})
     await api.initWatcher(page)
 
-    let videoElement = await waitForSelector(page, "video")
-    let videoDuration = await page.evaluate((e) => Math.floor(e.duration), videoElement)
-
-    let interval = setInterval(async () => {
-        let time = await page.evaluate((e) => Math.floor(e.currentTime), videoElement)
-    
-        console.log(time, videoDuration, index)
-
-        if(time > 60 * 5){
-            //console.log(time, bandwithUsed)
-            clearInterval(interval)
-            await browser.close()
-        }
+    setInterval(async () => {
+        console.log(await api.getPlayerStatistics(page))
     }, 1000)
 }
 
-//runApp(999)
+runApp(999)
 
 for (let i = 0; i < 10; i += 2){
     setTimeout(async () => {
-        runApp(i + 1)
-        runApp(i + 2)
+        //runApp(i + 1)
+        //runApp(i + 2)
     }, i * 5 * 1000)
 }

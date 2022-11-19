@@ -3,6 +3,11 @@ let {
     waitForSelector,waitForXPath, typeSelector, typeXPath, sleep,
     jiggleMouse, confirmNavigation, random} = require("./publicFunctions.js")
 
+/**
+ * Initialises the video player, should be run only once per page
+ * @param {Object} page result of api.handleNewPage()
+*/
+
 function initWatcher(page) {
     return new Promise(async (resolve, reject) => {
         if (!this.__handled) reject(new Error(`Please call api.connectBrowser first`))
