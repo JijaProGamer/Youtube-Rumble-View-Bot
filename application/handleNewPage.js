@@ -56,12 +56,16 @@ function handleNewPage() {
             request.continue()
         })
 
-        page.on('response', (response) => {
+        page.on('response', async (response) => {
             let headers = response.headers()
             this.data.emit(`requestHandled`, { url: response.url(), headers: headers, status: response.status() })
 
             if (headers[`content-length`]) {
                 this.data.emit("bandwithUsed", parseFloat(headers[`content-length`]))
+            } else {
+                response.buffer().then((buffer) => {
+                    this.data.emit("bandwithUsed", buffer.length)
+                }).catch(() => {})
             }
         })
 

@@ -50,7 +50,7 @@ const clickSelector = async (page, selector) => {
 }
 
 const clickXPath = async (page, XPath) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {        
         waitForXPath(page, XPath).then(async (element) => {
             await element.click()
             resolve()
@@ -128,6 +128,22 @@ const uploadFileXPath = async (page, XPath, file) => {
     await fileChooser?.accept([file])
 }
 
+const jiggleMouse = async (page, position) => {
+    await page.mouse.move(position, position)
+    await sleep(1000)
+    await page.mouse.move(position, position)
+}
+
+const confirmNavigation = (page) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            page.goto(website, { timeout: 5000, waitUntil: "networkidle0" }).then(resolve).catch(resolve)
+        } catch (err) {
+            resolve(err)
+        }
+    })
+}
+
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
 module.exports = {
@@ -137,6 +153,8 @@ module.exports = {
     clickXPath,
     goto,
     waitForSelector,
+    jiggleMouse,
+    confirmNavigation,
     waitForXPath,
     typeSelector,
     typeXPath,

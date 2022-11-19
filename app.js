@@ -6,13 +6,14 @@ let random = (min, max) => min + Math.floor(Math.random() * (max - min));
 
 let {
     uploadFileXPath, uploadFileSelector, clickSelector, clickXPath, goto,
-    waitForSelector,waitForXPath, typeSelector, typeXPath, sleep} = require("./application/publicFunctions.js");
+    waitForSelector,waitForXPath, typeSelector, typeXPath, sleep,
+    jiggleMouse, confirmNavigation} = require("./application/publicFunctions.js")
 
-(async () => {    
+let runApp = async (index) => {
     let browserConnection = api.connectBrowser(false, "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", {
-        browserWSEndpoint: "wss://chrome.browserless.io?token=",
+        //browserWSEndpoint: "wss://chrome.browserless.io?token=",
         proxyServer: "bloxxy213.asuscomm.com:31280",
-        //userDataDir: path.join(__dirname, "/testUserDataDir"),
+        userDataDir: path.join(__dirname, `/testUserDataDir/${index}`),
         saveBandwith: true,
     })
 
@@ -35,21 +36,53 @@ let {
         }, 250)
     })
 
-    await page.goto("https://www.youtube.com/watch?v=nfudlY_RV9g", {waitUntil: "domcontentloaded"})
+    await page.goto("https://www.youtube.com/watch?v=FCGvDqcetNY", {waitUntil: "networkidle0"})
+    await confirmNavigation(page)
 
-    setInterval(async () => {
-        await page.mouse.move(random(85, 200), random(85, 200));
-        await sleep(1000)
-        await page.mouse.move(random(85, 200), random(85, 200));
-    }, 500)
+    //let playButton = await waitForSelector(page, `#movie_player > div.ytp-cued-thumbnail-overlay > button`)
+    //await playButton.click()
 
-    await page.waitForNavigation({waitUntil: "networkidle2"})
-    let timeSpan = await waitForXPath(page, `/html/body/ytd-app/div[1]/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/div[1]/div[2]/div/div/ytd-player/div/div/div[32]/div[2]/div[1]/div[1]/span[2]`)
+    await jiggleMouse(page, random(85, 200))
+    setInterval(() => {jiggleMouse(page, random(85, 200))}, 500)
 
-    setInterval(async () => {
-        let timeStart = await page.evaluate(t => t.childNodes[0].innerHTML, timeSpan)
-        let timeEnd = await page.evaluate(t => t.childNodes[2].innerHTML, timeSpan)
+    let videoElement = await waitForSelector(page, `video`)
+    await page.evaluate((e) => e.pause(), videoElement)
     
-        console.log(timeStart, timeEnd)
-    }, 500)
-})()
+    await page.evaluate(() => {
+        document.getElementsByClassName("ytp-settings-button")[0].click()
+    })
+
+    await clickSelector(page, `.ytp-right-controls > button:nth-child(1)`)
+
+    await page.evaluate(() => {
+        document.getElementsByClassName("ytp-panel-menu")[0].lastChild.click()
+    })
+
+    await page.evaluate((b) => {
+        let items = Array.from(document.getElementsByClassName("ytp-menuitem"))
+        items[items.length - 2].click()
+    })
+
+    await sleep(100)
+    await page.evaluate((e) => e.play(), videoElement)
+    
+    let videoDuration = await page.evaluate((e) => Math.floor(e.duration), videoElement)
+
+    let interval = setInterval(async () => {
+        let time = await page.evaluate((e) => Math.floor(e.currentTime), videoElement)
+    
+        if(time > 2){
+            clearInterval(interval)
+            await browser.close()
+        }
+    }, 1000)
+}
+
+runApp(1)
+
+for (let i = 0; i < 10; i += 2){
+    setTimeout(async () => {
+        //runApp(i + 1)
+        //runApp(i + 2)
+    }, i * 10 * 1000)
+}
