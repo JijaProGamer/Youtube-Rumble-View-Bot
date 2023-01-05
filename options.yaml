@@ -1,0 +1,20 @@
+close_server_on_finish: true
+server_port: 8955
+headless: false
+no_visuals: false
+browserPath: C:\Program Files\Google\Chrome\Application\chrome.exe
+concurrency: 0
+concurrencyInterval: 20
+proxyTimeout: 30
+disable_proxy_tests: false
+proxy_tested_headless: true
+shuffle_viewing_order: true
+proxies:
+
+videos:
+  - id: VmqjnP98wfM
+    watchTime: 100%
+    guest_views: 5
+    style:
+      - search
+      - subscriptions
