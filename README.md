@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="ViewCount" src="https://komarev.com/ghpvc/?username=JijaProGamer&color=green">
+    <img alt="ViewCount" src="https://views.whatilearened.today/views/github/JijaProGamer/Youtube-View-Bot.svg">
     <img alt="OS" src="https://img.shields.io/badge/OS-Windows%20/%20Linux-success">
     <a href="https://github.com/JijaProGamer/youtubeWatchBot/releases/dev">
 </p>
@@ -10,8 +10,6 @@ NodeJS program for view botting, watch time botting, comment botting, and like b
 You can use it as a CLI, as a simple program or by using its API, with control over every part of the program
 
 If you want to create your own view bot, use my API: https://github.com/JijaProGamer/youtube-selfbot-api
-
-![CLI Example image](cli/Capture.PNG?raw=true)
 
 # Supporting me
 
@@ -24,7 +22,7 @@ https://www.paypal.me/bloxxywashere
 # Requirements
 
  * NodeJS 16.17.1 (other versions not tested)
- * Connection speed of at least 0.5 mbps per proxy
+ * Connection speed of at 2 megabits/minute per worker
  * Google chrome 107.0.5304.107 or later (NO OTHER BROWSER SUPPORTED OTHER THAN CHROME)
  * A good proxy is needed if you want many views
  * Decent computer
@@ -50,4 +48,3 @@ You can contact me on my discord: Bloxxy213#8826
 # Topics
  * [Getting started](https://github.com/JijaProGamer/youtubeWatchBot/wiki/Getting-started)
  * [Proxies](https://github.com/JijaProGamer/youtubeWatchBot/wiki/Proxies)
- * [editing the options.yaml file](https://github.com/JijaProGamer/youtubeWatchBot/wiki/editing-the-options.yaml-file)

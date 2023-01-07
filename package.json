@@ -37,6 +37,6 @@
     "socket.io": "^4.5.4",
     "uuid": "^9.0.0",
     "yaml": "^2.2.1",
-    "youtube-selfbot-api": "^2.5.6"
+    "youtube-selfbot-api": "^2.5.9"
   }
 }

@@ -15,16 +15,44 @@
     container_type = "queue";
   }
 
-  function MB_f() {
-    return finished_workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0;
+  function workerBandwith(workers){
+    return workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0
   }
 
-  function MB_c() {
-    return current_workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0;
+  function averageBandwithPerWorker_time_l(workers){
+    let result = workers.reduce((total, next) => {
+      let workerTime = ((next.finish_time || Date.now()) - next.start_time) / 1000
+      let bandwith_time = (next.bandwith / 1e+6) / (workerTime / 60)
+
+      return total + bandwith_time
+    }, 0)
+
+    return result || 0
+  }
+
+  function averageBandwithPerWorker_time(workers){
+    let result = workers.reduce((total, next) => {
+      let workerTime = ((next.finish_time || Date.now()) - next.start_time) / 1000
+      let bandwith_time = (next.bandwith / 1e+6) / (workerTime / 60)
+
+      return total + bandwith_time
+    }, 0) / workers.length
+
+    return result || 0
+  }
+
+  function averageBandwithPerWorker(workers){
+    let result = workers.reduce((total, next) => {
+      let bandwith_time = (next.bandwith / 1e+6)
+
+      return total + bandwith_time
+    }, 0) / workers.length
+
+    return result || 0
   }
 
   function toTime(value) {
-    return value / ((Date.now() / 1000 - start_time / 1000) / 60)
+    return value / ((Date.now() - start_time) / 60000)
   }
 </script>
 
@@ -33,16 +61,16 @@
   {#if container_type == "finished"}
     <div class="element_container">
       <p class="element_id">
-        Total bandwith: {(finished_workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0).toFixed(2)} megabits
+        Total bandwith: {workerBandwith(finished_workers).toFixed(2)} megabits
       </p>
       <p class="element_id">
-        Total bandwith: {(toTime(finished_workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0)).toFixed(2)} megabits/minute
+        Total bandwith: {averageBandwithPerWorker_time_l(finished_workers).toFixed(2)} megabits/minute
       </p>
       <p class="element_id">
-        average bandwith per worker: {((MB_f() / finished_workers.length) || 0).toFixed(2)} megabits
+        average bandwith per worker: {averageBandwithPerWorker(finished_workers).toFixed(2)} megabits
       </p>
       <p class="element_id">
-        average bandwith per worker: {(toTime(MB_f() / finished_workers.length) || 0).toFixed(2)} megabits/minute
+        average bandwith per worker: {averageBandwithPerWorker_time(finished_workers).toFixed(2)} megabits/minute
       </p>
     </div>
   {/if}
@@ -50,16 +78,16 @@
   {#if container_type == "current"}
     <div class="element_container">
       <p class="element_id">
-        Total bandwith: {(current_workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0).toFixed(2)} megabits
+        Total bandwith: {(workerBandwith(current_workers) || 0).toFixed(2)} megabits
       </p>
       <p class="element_id">
-        Total bandwith: {(toTime(current_workers.reduce((a, b) => a + b.bandwith, 0) / 1e6 || 0)).toFixed(2)} megabits/minute
+        Total bandwith: {averageBandwithPerWorker_time_l(current_workers).toFixed(2)} megabits/minute
       </p>
       <p class="element_id">
-        average bandwith per worker: {((MB_c() / current_workers.length) || 0).toFixed(2)} megabits
+        average bandwith per worker: {averageBandwithPerWorker(current_workers).toFixed(2)} megabits
       </p>
       <p class="element_id">
-        average bandwith per worker: {(toTime(MB_c() / current_workers.length) || 0).toFixed(2)} megabits/minute
+        average bandwith per worker: {averageBandwithPerWorker_time(current_workers).toFixed(2)} megabits/minute
       </p>
     </div>
   {/if}

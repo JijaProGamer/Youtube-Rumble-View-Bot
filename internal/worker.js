@@ -66,7 +66,7 @@ function ask(type, message) {
   });
 
   data.on("bandwithUsed", (bandwith) => {
-    communicate("bandwith_usage", bandwith);
+    communicate("bandwith_usage", bandwith.bandwith);
   });
 
   let browser = await connection.browser();

@@ -78,6 +78,69 @@ global.jobs = jobs;
 
 let queue_workers = [];
 
+webApp.get("/api/options", (req, res) => {
+  res.send(global.raw_options)
+})
+
+webApp.post("/api/options", (req, res) => {
+  global.raw_options = { ...req.body, videos: global.raw_videos };
+  fs.writeFileSync("./UDATA/options.yaml",stringify(global.raw_options),"utf-8");
+
+  res.sendStatus(200);
+})
+
+webApp.get("/api/videos", (req, res) => {
+  res.send(global.raw_videos)
+})
+
+webApp.post("/api/options", (req, res) => {
+  global.raw_options = { ...req.body, videos: global.raw_videos };
+  fs.writeFileSync("./UDATA/options.yaml",stringify(global.raw_options),"utf-8");
+
+  res.sendStatus(200);
+})
+
+webApp.post("/api/videos", (req, res) => {
+  global.raw_videos = [...global.raw_videos, req.body];
+  global.raw_options = { ...global.raw_options, videos: req.body };
+  fs.writeFileSync("./UDATA/options.yaml", stringify(global.raw_options), "utf-8");
+
+  res.sendStatus(201);
+})
+
+webApp.delete("/api/videos", (req, res) => {
+  let video = global.raw_videos.find((_, index) => index == req.body.index)
+  if(video){
+    global.raw_videos = global.raw_videos.filter((_, index) => index !== req.body.index)
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(404)
+  }
+})
+
+webApp.patch("/api/videos", (req, res) => {
+  let video = global.raw_videos.findIndex((_, index) => index == req.body.index)
+  if(video > -1){
+    global.raw_videos[video] = req.body.video
+    res.sendStatus(200)
+  } else {
+    res.sendStatus(404)
+  }
+})
+
+webApp.get("/api/status", (req, res) => {
+  res.json({
+    version: global.VERSION,
+    isWorking: global.NXT_DATA == "START",
+    proxy_stats: global.proxy_stats,
+    worker_stats: {
+      finished: workers_finished,
+      working: current_workers,
+      queue: queue_workers
+    }
+  });
+})
+
 webApp.post("/internal/set_raw_options", (req, res) => {
   global.raw_options = { ...req.body, videos: global.raw_videos };
 
@@ -146,14 +209,12 @@ webApp.get("/internal/get_version", (req, res) => {
 });
 
 webApp.get("/internal/get_latest_version", (req, res) => {
-  /*gaxios.request({
+  gaxios.request({
     method: "GET",
-    url: "https://raw.githubusercontent.com/JijaProGamer/youtubeWatchBot/master/VERSION",
+    url: "https://raw.githubusercontent.com/JijaProGamer/Youtube-View-Bot/master/VERSION",
   }).then((data) => {
-    res.send(data.data);
-  })*/
-
-  res.send("0");
+    res.send(data.data.toString());
+  })
 });
 
 function transformData(raw_data, resolve) {
@@ -250,6 +311,7 @@ function handleWorker(worker, job, index) {
       cache.proxy_used = false;
       worker.proxy_used = false;
       worker.finished = true;
+      worker.finish_time = Date.now()
 
       if (!worker.stopped) {
         if (errored) {
@@ -308,6 +370,7 @@ let interval = setInterval(() => {
             index: totalWorked,
             totalWorked: totalWorked + 1,
             current_time: 0,
+            start_time: Date.now(),
             loaded: false,
             bandwith: 0,
             //loading_bandwith: 0,
