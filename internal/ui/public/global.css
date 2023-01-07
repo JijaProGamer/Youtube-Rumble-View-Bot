@@ -28,6 +28,31 @@ main {
   color: #db3838;
 }
 
+.nxt_button {
+  color: #000000;
+  font-size: 2em;
+  max-width: 80%;
+  margin-left: 15%;
+}
+
+.h2_vs {
+  margin-top: 10%;
+  margin-bottom: 10%;
+  text-align: center;
+}
+
+.state_STOP {
+  background-color: #a5db8f;
+}
+
+.state_START {
+  background-color: #db3838;
+}
+
+.state_WAIT {
+  background-color: #db3838;
+}
+
 #buttons_container {
   display: flex;
   flex-direction: column;
@@ -41,7 +66,7 @@ main {
   font-weight: 100;
   text-align: center;
   margin-left: 10%;
-  margin-top: 15%;
+  margin-top: 5%;
   border: 5px solid black;
   box-shadow: 0px 24px 3px -24px rgb(255, 230, 0);
 }
@@ -106,6 +131,18 @@ main {
   margin-bottom: 0%;
 }
 
+.selector_text {
+  color: #f5f5f5;
+  font-size: 2em;
+  margin-bottom: 0%;
+}
+
+.video_selector_text {
+  color: #f5f5f5;
+  font-size: 1.5em;
+  margin-bottom: 0%;
+}
+
 .selector_explanation {
   color: #a7a7a7;
   font-size: 1.5em;
@@ -124,6 +161,13 @@ main {
 
 .selector_button {
   font-size: 1em;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.video_selector_button {
+  font-size: 0.75em;
   height: 100%;
   margin: 0;
   padding: 0;
@@ -166,6 +210,13 @@ main {
   margin-top: 2%;
 }
 
+.element_container_small {
+  border: 5px solid #f5f5f5;
+  max-width: 91%;
+  margin-left: 3%;
+  margin-top: 2%;
+}
+
 #types_container {
   border: 2px solid #f5f5f5;
   max-width: 100%;
@@ -199,6 +250,16 @@ button {
   font-weight: 300;
   margin-left: 0.5%;
   margin-top: 0.5%;
+}
+
+.delete_button {
+  background-color: #db3838;
+  padding: 1%;
+}
+
+.delete_button_acc {
+  background-color: #db8138;
+  padding: 1%;
 }
 
 .log_date {
@@ -311,4 +372,12 @@ h2 {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+}
+
+.new_button {
+  width: 90%;
+  margin-left: 5%;
+  font-size: 2em;
+  background-color: #a5db8f;
+  color:#f5f5f5;
 }

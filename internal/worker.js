@@ -53,7 +53,7 @@ function ask(type, message) {
 (async () => {
   let connection = await API.connectBrowser(options.browserPath, {
     proxyServer: worker.job.proxy,
-    userDataDir: path.join(__dirname, `cache/${index}`),
+    userDataDir: path.join(__dirname, `../UDATA/cache/${index}`),
     saveBandwith: true,
     headless: options.headless,
     no_visuals: options.no_visuals,
@@ -116,7 +116,7 @@ function ask(type, message) {
             disliked = true
         }
 
-        if(worker.job.account.comment && !commented && current_time >= worker.job.account.commentAfter){
+        if(worker.job.account.comment && worker.job.account.comment.length > 0 && !commented && current_time >= worker.job.account.commentAfter){
             await API.makeComment(page, worker.job.account.comment)
             commented = true
         }

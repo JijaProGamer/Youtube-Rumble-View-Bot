@@ -1,20 +1,23 @@
 close_server_on_finish: true
-server_port: 8955
+server_port: 6553
 headless: false
-no_visuals: false
+no_visuals: true
 browserPath: C:\Program Files\Google\Chrome\Application\chrome.exe
-concurrency: 0
-concurrencyInterval: 20
+concurrency: 20
+concurrencyInterval: 25
 proxyTimeout: 30
 disable_proxy_tests: false
 proxy_tested_headless: true
-shuffle_viewing_order: true
 proxies:
-
+  - direct://
 videos:
   - id: VmqjnP98wfM
-    watchTime: 100%
-    guest_views: 5
+    guest_views: 50
+    is_live: false
+    watchTime:
+      - 100
+      - 100
     style:
       - search
-      - subscriptions
+      - direct
+    accounts: []

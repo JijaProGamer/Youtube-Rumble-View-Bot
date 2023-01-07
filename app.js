@@ -6,14 +6,13 @@ const webApp = express();
 const server = http.createServer(webApp);
 const io = new (require("socket.io").Server)(server);
 
-webApp.use(express.json())
+webApp.use(express.json());
 webApp.use(require("cors")());
 
 const fs = require("fs-extra");
 
 const { spawn } = require("child_process");
 const { parse, stringify } = require("yaml");
-const { sleep } = require("youtube-selfbot-api")().internal;
 
 const killProcesses = (name) => {
   return new Promise((resolve, reject) => {
@@ -40,13 +39,31 @@ let jobs = [];
 let current_workers = [];
 let workers_finished = [];
 
-const options = parse(fs.readFileSync("./options.yaml", "utf-8"));
+let options = parse(fs.readFileSync("./UDATA/options.yaml", "utf-8"));
+
+options.proxies = options.proxies.filter((v) => v.length > 5);
+options.proxies = [...new Set(options.proxies)];
+
+for (let [index, proxy] of options.proxies.entries()) {
+  if (proxy.length > 5) {
+    let breaks = proxy.split(":");
+    if (breaks.length == 4) {
+      options.proxies[
+        index
+      ] = `${breaks[2]}:${breaks[3]}@${breaks[0]}:${breaks[1]}`;
+    }
+  }
+}
+
+global.NXT_DATA = "STOP";
+global.good_proxies = JSON.parse(fs.readFileSync("./UDATA/ALV_PRX", "utf-8"));
 
 global.server = server;
 global.webApp = webApp;
 
 global.options = options;
 global.raw_options = options;
+global.raw_videos = options.videos;
 
 global.VERSION = fs.readFileSync("./VERSION");
 global.io = io;
@@ -62,10 +79,38 @@ global.jobs = jobs;
 let queue_workers = [];
 
 webApp.post("/internal/set_raw_options", (req, res) => {
-  global.raw_options = req.body
-  fs.writeFileSync("./options.yaml", stringify(global.raw_options), "utf-8")
+  global.raw_options = { ...req.body, videos: global.raw_videos };
 
-  res.sendStatus(200)
+  fs.writeFileSync(
+    "./UDATA/options.yaml",
+    stringify(global.raw_options),
+    "utf-8"
+  );
+
+  res.sendStatus(200);
+});
+
+webApp.post("/internal/set_videos", (req, res) => {
+  global.raw_videos = req.body;
+  global.raw_options = { ...global.raw_options, videos: req.body };
+  fs.writeFileSync(
+    "./UDATA/options.yaml",
+    stringify(global.raw_options),
+    "utf-8"
+  );
+
+  res.sendStatus(200);
+});
+
+webApp.post("/internal/set_NXT_DATA", (req, res) => {
+  global.NXT_DATA = req.body.data;
+  start(global.NXT_DATA == "START");
+
+  res.sendStatus(200);
+});
+
+webApp.get("/internal/NXT_DATA", (req, res) => {
+  res.send(global.NXT_DATA);
 });
 
 webApp.get("/internal/get_raw_options", (req, res) => {
@@ -165,12 +210,17 @@ function handleWorker(worker, job, index) {
       cache.index,
     ]);
 
+    worker.process = worker_process;
+
     worker_process.stderr.on("data", (data) => {
       data = data.toString();
-      errored = true;
 
-      worker.errors.push(data);
-      log(`worker #${worker.index} had an error: ${data}`, "error");
+      if (!worker.stopped) {
+        errored = true;
+
+        worker.errors.push(data);
+        log(`worker #${worker.index} had an error: ${data}`, "error");
+      }
     });
 
     worker_process.stdout.on("data", (raw_data) => {
@@ -201,12 +251,14 @@ function handleWorker(worker, job, index) {
       worker.proxy_used = false;
       worker.finished = true;
 
-      if (errored) {
-        worker.failed = true;
+      if (!worker.stopped) {
+        if (errored) {
+          worker.failed = true;
 
-        reject();
-      } else {
-        resolve();
+          reject();
+        } else {
+          resolve();
+        }
       }
 
       io.sockets.write({
@@ -237,99 +289,148 @@ function log(message, type) {
 
 global.log = log;
 
-require("./internal/application/launchGUI.js").then(async () => {
-  let lastLaunched = Date.now() / 1000 - options.concurrencyInterval;
+let lastLaunched = Date.now() / 1000 - options.concurrencyInterval;
+let shouldWork = false;
 
-  for (let i = 5; i > 0; i--) {
-    await sleep(1000);
-  }
+require("./internal/application/launchGUI.js");
 
-  await correctOptions();
-
-  if (options.shuffle_viewing_order) {
-    jobs = jobs
-      .map((value) => ({ value, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(({ value }) => value);
-  }
-
-  io.sockets.write({
-    type: "new_options",
-    data: options,
-  });
-
-  io.sockets.write({
-    type: "change_queue",
-    data: jobs,
-  });
-
-  queue_workers = jobs;
-
-  let interval = setInterval(() => {
+let interval = setInterval(() => {
+  if (shouldWork) {
     killProcesses("software_reporter_tool");
 
     if (Date.now() / 1000 - options.concurrencyInterval > lastLaunched) {
       if (currentWorking < options.concurrency) {
         let currentJob = totalWorked;
         let job = jobs[totalWorked];
-        let worker = {
-          job,
-          index: totalWorked,
-          totalWorked: totalWorked + 1,
-          current_time: 0,
-          loaded: false,
-          bandwith: 0,
-          //loading_bandwith: 0,
-          failed: false,
-          finished: false,
-          proxy_used: true,
-          debug: [],
-          errors: [],
-        };
+        if (job) {
+          let worker = {
+            job,
+            index: totalWorked,
+            totalWorked: totalWorked + 1,
+            current_time: 0,
+            loaded: false,
+            bandwith: 0,
+            //loading_bandwith: 0,
+            failed: false,
+            finished: false,
+            stopped: false,
+            proxy_used: true,
+            debug: [],
+            errors: [],
+          };
 
-        queue_workers = queue_workers.filter((v) => v.uuid !== worker.job.uuid);
+          queue_workers = queue_workers.filter(
+            (v) => v.uuid !== worker.job.uuid
+          );
 
-        io.sockets.write({
-          type: "add_worker",
-          data: worker,
-        });
-
-        current_workers.push(worker);
-
-        if (!job) {
-          return clearInterval(interval);
-        }
-
-        log(`worker #${currentJob + 1} started`, "info");
-
-        handleWorker(worker)
-          .then(() => {
-            workers_finished.push(worker);
-            current_workers = current_workers.filter(
-              (v) => v.index !== worker.index
-            );
-
-            currentWorking -= 1;
-
-            log(`worker #${currentJob} finished`, "info");
-          })
-          .catch((err) => {
-            workers_finished.push(worker);
-            current_workers = current_workers.filter(
-              (v) => v.index !== worker.index
-            );
-
-            currentWorking -= 1;
-
-            log(`worker #${currentJob} finished with an error`, "error");
+          io.sockets.write({
+            type: "add_worker",
+            data: worker,
           });
 
-        currentWorking += 1;
-        totalWorked += 1;
-        lastLaunched = Date.now() / 1000;
+          current_workers.push(worker);
+
+          log(`worker #${currentJob + 1} started`, "info");
+
+          handleWorker(worker)
+            .then(() => {
+              workers_finished.push(worker);
+              current_workers = current_workers.filter(
+                (v) => v.index !== worker.index
+              );
+
+              currentWorking -= 1;
+
+              log(`worker #${currentJob} finished`, "info");
+            })
+            .catch((err) => {
+              workers_finished.push(worker);
+              current_workers = current_workers.filter(
+                (v) => v.index !== worker.index
+              );
+
+              currentWorking -= 1;
+
+              log(`worker #${currentJob} finished with an error`, "error");
+            });
+
+          currentWorking += 1;
+          totalWorked += 1;
+          lastLaunched = Date.now() / 1000;
+        }
       }
     }
-  }, 1000);
-});
+  }
+}, 1000);
+
+async function start(started) {
+  if (started) {
+    io.sockets.write({
+      type: "change_PRX",
+      data: { nx: "WAIT", ox: "WAIT" },
+    });
+
+    currentWorking = 0;
+    totalWorked = 0;
+
+    current_workers = [];
+    queue_workers = [];
+    workers_finished = [];
+    global.jobs = jobs = [];
+    global.proxy_stats = {
+      untested: [],
+      good: [],
+      bad: [],
+    };
+
+    lastLaunched = Date.now() / 1000 - options.concurrencyInterval;
+
+    options = global.raw_options;
+    global.options = options;
+
+    await correctOptions();
+
+    jobs = jobs
+      .map((value) => ({ value, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({ value }) => value);
+
+    jobs = global.jobs;
+    queue_workers = jobs;
+
+    io.sockets.write({
+      type: "change_PRX",
+      data: { nx: "START", ox: "STOP" },
+    });
+
+    io.sockets.write({
+      type: "change_queue",
+      data: jobs,
+    });
+
+    io.sockets.write({
+      type: "change_start",
+      data: Date.now(),
+    });
+
+    shouldWork = true;
+  } else {
+    shouldWork = false;
+
+    io.sockets.write({ type: "clear_proxies" });
+
+    for (let worker of current_workers) {
+      worker.stopped = true;
+      worker.process?.kill("SIGINT");
+    }
+
+    io.sockets.write({ type: "clear_workers" });
+
+    io.sockets.write({
+      type: "change_PRX",
+      data: { nx: "STOP", ox: "START" },
+    });
+  }
+}
 
 require("./internal/application/webAppFiles.js");
