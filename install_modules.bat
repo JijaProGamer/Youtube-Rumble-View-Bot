@@ -1,6 +1,8 @@
-npm install
-npm install electron --global
+CALL npm install
+CALL npm install electron --global
 
-cd .\internal\ui\
-npm install
-npm run build
+CALL cd .\internal\ui\
+CALL npm install
+CALL npm run build
+CALL cd ..
+CALL cd ..

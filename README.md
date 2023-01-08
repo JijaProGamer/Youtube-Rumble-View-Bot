@@ -7,7 +7,7 @@
 # Youtube watch bot
 
 NodeJS program for view botting, watch time botting, comment botting, and like botting
-You can use it as a CLI, as a simple program or by using its API, with control over every part of the program
+You can use it as a application, or by using its API, with control over every part of the program
 
 If you want to create your own view bot, use my API: https://github.com/JijaProGamer/youtube-selfbot-api
 
@@ -28,6 +28,7 @@ https://www.paypal.me/bloxxywashere
  * Decent computer
 
 # Features
+ * GUI to controll the program
  * Bypasess bot detection
  * Bypasses cookies, consent, and other useless pages
  * Can customise every part of it, including extensions
@@ -45,6 +46,7 @@ Do not contact me until you've read all the wiki.
 
 You can contact me on my discord: Bloxxy213#8826
 
+You can get help faster by joining our discord server: https://discord.gg/E7Kb2c9euw
 # Topics
  * [Getting started](https://github.com/JijaProGamer/youtubeWatchBot/wiki/Getting-started)
  * [Proxies](https://github.com/JijaProGamer/youtubeWatchBot/wiki/Proxies)

@@ -4,7 +4,10 @@
   "description": "Youtube watch time bot, like bot, comment bot",
   "main": "app.js",
   "scripts": {
-    "run": "electron app.js"
+    "run": "electron app.js",
+    "start": "electron app.js",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "repository": {
     "type": "git",
@@ -23,7 +26,9 @@
   },
   "homepage": "https://github.com/JijaProGamer/youtubeWatchBot#readme",
   "devDependencies": {
-    "electron": "^22.0.0"
+    "@electron-forge/cli": "^6.0.4",
+    "electron": "^22.0.0",
+    "electron-prebuilt-compile": "^8.2.0"
   },
   "dependencies": {
     "await-to-js": "^3.0.0",
@@ -38,5 +43,22 @@
     "uuid": "^9.0.0",
     "yaml": "^2.2.1",
     "youtube-selfbot-api": "^2.5.9"
+  },
+  "build": {
+    "productName": "Youtube-Watch-Bot",
+    "appId": "bloxxy.YTWatchBot",
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "yt_watch_bot.exe"
+    },
+    "directories": {
+      "output": "electron/output",
+      "app": "electron/app",
+      "buildResources": "electron/buildResources"
+    }
   }
 }
