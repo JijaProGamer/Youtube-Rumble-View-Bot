@@ -20,8 +20,8 @@ module.exports = () => {
 
     for (let [index, proxy] of global.options.proxies.entries()) {
       if (proxy.length > 5) {
-        let breaks = proxy.split(":");
-        if (breaks.length == 4) {
+        let breaks = proxy.split("@");
+        if (breaks.length == 1) {
           global.options.proxies[
             index
           ] = `${breaks[2]}:${breaks[3]}@${breaks[0]}:${breaks[1]}`;
