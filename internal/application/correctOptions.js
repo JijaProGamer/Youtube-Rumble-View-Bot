@@ -128,7 +128,7 @@ module.exports = () => {
     } else {
       let data = {
         type: "add_testing_proxy",
-        data: proxy,
+        data: "direct://",
       };
 
       global.proxy_stats.untested.push(data);
@@ -142,6 +142,10 @@ module.exports = () => {
 
       global.proxy_stats.good.push(data2);
       io.sockets.write(data2);
+
+      global.proxy_stats.untested = global.proxy_stats.untested.filter(
+        (v) => v.data !== "direct://"
+      );
 
       global.options.proxies = ["direct://"];
     }
