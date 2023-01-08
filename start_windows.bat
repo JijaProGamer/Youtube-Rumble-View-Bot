@@ -1,2 +1,2 @@
-npx electron ./app.js
+electron ./app.js
 pause
