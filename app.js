@@ -413,7 +413,6 @@ let interval = setInterval(() => {
 }, 1000);
 
 async function start(started) {
-  console.log(1)
   if (started) {
     io.sockets.write({
       type: "change_PRX",

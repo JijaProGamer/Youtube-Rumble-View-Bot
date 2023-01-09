@@ -15,10 +15,12 @@ module.exports = function(proxy, index){
             try {
                 new URL(proxy)
             } catch (err) {
-                reject({
-                    failure: "Invalid proxy URL",
-                    error: "Invalid proxy URL"
-                })
+                if(proxy.split(":").length !== 5){
+                    reject({
+                        failure: "Invalid proxy URL",
+                        error: "Invalid proxy URL"
+                    })
+                }
             }
 
             if (proxy !== "direct://") {
