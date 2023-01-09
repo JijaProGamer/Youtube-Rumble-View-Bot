@@ -41,20 +41,6 @@ let workers_finished = [];
 
 let options = parse(fs.readFileSync("./UDATA/options.yaml", "utf-8"));
 
-options.proxies = options.proxies.filter((v) => v.length > 5);
-options.proxies = [...new Set(options.proxies)];
-
-for (let [index, proxy] of options.proxies.entries()) {
-  if (proxy.length > 5) {
-    let breaks = proxy.split(":");
-    if (breaks.length == 4) {
-      options.proxies[
-        index
-      ] = `${breaks[2]}:${breaks[3]}@${breaks[0]}:${breaks[1]}`;
-    }
-  }
-}
-
 global.NXT_DATA = "STOP";
 global.good_proxies = JSON.parse(fs.readFileSync("./UDATA/ALV_PRX", "utf-8"));
 
@@ -153,7 +139,7 @@ webApp.post("/internal/set_raw_options", (req, res) => {
   res.sendStatus(200);
 });
 
-webApp.post("/internal/set_videos", (req, res) => {
+webApp.post("/internal/set_videos", (req, res) => {  
   global.raw_videos = req.body;
   global.raw_options = { ...global.raw_options, videos: req.body };
   fs.writeFileSync(
@@ -427,6 +413,7 @@ let interval = setInterval(() => {
 }, 1000);
 
 async function start(started) {
+  console.log(1)
   if (started) {
     io.sockets.write({
       type: "change_PRX",

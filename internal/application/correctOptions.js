@@ -1,11 +1,12 @@
 const fs = require("fs");
-const path = require("path")
+const path = require("path");
 const to = require("await-to-js").to;
 
 const idValid = require("./idValid.js");
 const checkProxy = require("./testProxy.js");
 const create_job = require("./create_job");
 
+const io = global.io;
 
 module.exports = () => {
   return new Promise(async (resolve) => {
@@ -18,10 +19,15 @@ module.exports = () => {
     global.options.proxies = global.options.proxies.filter((v) => v.length > 5);
     global.options.proxies = [...new Set(global.options.proxies)];
 
+    console.log(1)
+
     for (let [index, proxy] of global.options.proxies.entries()) {
       if (proxy.length > 5) {
         let breaks = proxy.split("@");
+        console.log(breaks);
+        console.log(breaks.length);
         if (breaks.length == 1) {
+          console.log("OK")
           global.options.proxies[
             index
           ] = `${breaks[2]}:${breaks[3]}@${breaks[0]}:${breaks[1]}`;
