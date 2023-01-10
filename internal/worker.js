@@ -57,6 +57,7 @@ function ask(type, message) {
     saveBandwith: true,
     headless: options.headless,
     no_visuals: options.no_visuals,
+    blockAds: options.skip_ads
   });
 
   let data = connection.data;

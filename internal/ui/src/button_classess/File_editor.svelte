@@ -55,6 +55,11 @@
     sendInputChange(raw_options)
   }
 
+  function change_skip_ads() {
+    raw_options.skip_ads = !raw_options.skip_ads
+    sendInputChange(raw_options)
+  }
+
   function change_proxyTimeout(){
     raw_options.proxyTimeout = proxyTimeout
     sendInputChange(raw_options)
@@ -97,7 +102,7 @@
 </div>
 
 <div id="elements_container">
-  <p class="selector_explanation" style="text-align: center;">NOTE: You need to restart this app for the settings to apply</p>
+  <p class="selector_explanation" style="text-align: center;">NOTE: You need to restart the workers for settings to apply</p>
   <p class="selector_explanation" style="text-align: center;">You should read the wiki before changing any setting</p>
 
   <div id="simple_selectors_1">
@@ -116,13 +121,18 @@
     </h3>
     <p class="selector_explanation">The path of google chrome, the default one may not be always correct</p>
 
+    <h3 class="selector_text">Skip ads: 
+      <button on:click={change_skip_ads} class="selector_button proxy_{raw_options.skip_ads ? "good" : "bad"}">{raw_options.skip_ads}
+    </button></h3>
+    <p class="selector_explanation">Should it automatically skip ads?</p>
+
     <h3 class="selector_text">Headless: 
-      <button on:click={change_headless} class="selector_button proxy_{raw_options.headless == true ? "good" : "bad"}">{raw_options.headless}
+      <button on:click={change_headless} class="selector_button proxy_{raw_options.headless ? "good" : "bad"}">{raw_options.headless}
     </button></h3>
     <p class="selector_explanation">Should the browsers be invisible? (May reduce CPU Usage)</p>
 
     <h3 class="selector_text">No visuals: 
-      <button on:click={change_no_visuals} class="selector_button proxy_{raw_options.no_visuals == true ? "good" : "bad"}">{raw_options.no_visuals}
+      <button on:click={change_no_visuals} class="selector_button proxy_{raw_options.no_visuals ? "good" : "bad"}">{raw_options.no_visuals}
     </button></h3>
     <p class="selector_explanation">Should the browsers not render the page? (Significantly reduces CPU usage)</p>
 
@@ -142,12 +152,12 @@
     <p class="selector_explanation">How much to wait for an proxy before erroring?</p>
 
     <h3 class="selector_text">Disable proxy tests: 
-      <button on:click={change_disable_proxy_tests} class="selector_button proxy_{raw_options.disable_proxy_tests == true ? "good" : "bad"}">{raw_options.disable_proxy_tests}
+      <button on:click={change_disable_proxy_tests} class="selector_button proxy_{raw_options.disable_proxy_tests ? "good" : "bad"}">{raw_options.disable_proxy_tests}
     </button></h3>
     <p class="selector_explanation">Act as all proxies are good (Bot may stop if they are not)</p>
 
     <h3 class="selector_text">Headless proxy tests: 
-      <button on:click={change_proxy_tested_headless} class="selector_button proxy_{raw_options.proxy_tested_headless == true ? "good" : "bad"}">{raw_options.proxy_tested_headless}
+      <button on:click={change_proxy_tested_headless} class="selector_button proxy_{raw_options.proxy_tested_headless ? "good" : "bad"}">{raw_options.proxy_tested_headless}
     </button></h3>
     <p class="selector_explanation">Should the proxy test browsers be headless?</p>
   </div>

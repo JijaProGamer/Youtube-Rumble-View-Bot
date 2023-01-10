@@ -22,11 +22,13 @@ module.exports = () => {
     for (let [index, proxy] of global.options.proxies.entries()) {
       if (proxy.length > 5) {
         let breaks = proxy.split("@");
+        let congr = proxy.split(":")
+
         if (breaks.length == 1) {
-          if(proxy.split(":").length == 5){
+          if(congr.length == 5){
             global.options.proxies[
               index
-            ] = `${breaks[2]}:${breaks[3]}@${breaks[0]}:${breaks[1]}`;
+            ] = `${congr[2]}:${congr[3]}@${congr[0]}:${congr[1]}`;
           }
         }
       }
