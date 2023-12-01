@@ -8,7 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { v4 } from 'uuid';
 import { NodeVM } from 'vm2';
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "fs"
+import { existsSync, mkdir, mkdirSync, readFileSync, readdirSync, writeFileSync } from "fs"
 
 import { createRequire } from "module";
 import { defaultServerInfo } from "./vars.js"
@@ -62,6 +62,10 @@ function getCurrentTime() {
 }
 
 let currentLogs = {}
+
+if(!existsSync(path.join(__dirname, "../../logs"))){
+    mkdirSync(path.join(__dirname, "../../logs"))
+}
 
 function ReadLatestLog(date, filePath) {
     if (existsSync(filePath)) {

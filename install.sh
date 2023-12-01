@@ -7,3 +7,4 @@ npx playwright install firefox
 
 cd ./main/
 npm run build
+npm rebuild better-sqlite3

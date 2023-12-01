@@ -3,6 +3,7 @@ const { spawn } = require("child_process")
 const path = require("path")
 require("ansicolor").nice
 
+
 function runServer() {
     return new Promise((resolve, reject) => {
         let child = spawn("node", [path.join(__dirname, "/main/server.js")])
@@ -35,6 +36,37 @@ function runServer() {
         child.on('close', (code, signal) => {
             process.exit(0)
         });
+
+        /*let child = spawn("node", [path.join(__dirname, "/main/server.js")])
+        let resolved = false
+
+        child.stdout.on("data", (data) => {
+            data = data.toString()
+
+            if (data.includes("listening")) {
+                let port = data.split("|")[1]
+
+                resolved = true
+                resolve({ server: child, port })
+            } else {
+                if (!resolved) {
+                    resolved = true
+                    reject(data)
+                } else {
+                    console.log(`INFO: `.blue + data.trim())
+                }
+            }
+        })
+
+        child.stderr.on("data", (data) => {
+            data = data.toString()
+
+            console.log(`ERROR: `.red + data)
+        })
+
+        child.on('close', (code, signal) => {
+            process.exit(0)
+        });*/
     })
 }
 
