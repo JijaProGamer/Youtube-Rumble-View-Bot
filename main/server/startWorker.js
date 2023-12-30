@@ -189,7 +189,7 @@ function startWorker(job, worker, userDataDir) {
             let [google_setup_err, googleContext] = await to(page.setupGoogle(job.account, cookies))
             if (google_setup_err) return processErr(`Error creating google context: ${google_setup_err}`)
 
-            let [google_login_err] = await to(googleContext.login(job.account))
+            let [google_login_err] = await to(googleContext.login(job.account, cookies))
             if (google_login_err) return processErr(`Error logging into google: ${google_login_err}`)
         } else {
             let [clear_storage_err] = await to(browser.clearStorage())
@@ -256,15 +256,15 @@ function startWorker(job, worker, userDataDir) {
 
             if (job.account && job.video_info.isLive) {
                 if (job.account.like) {
-                    await googleContext.like()
+                    await watcherContext.like()
                 }
 
                 if (job.account.dislike) {
-                    await googleContext.dislike()
+                    await watcherContext.dislike()
                 }
 
                 if (job.account.comment) {
-                    await googleContext.comment(job.account.comment)
+                    await watcherContext.comment(job.account.comment)
                 }
             }
         }
