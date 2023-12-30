@@ -262,6 +262,10 @@ function startWorker(job, worker, userDataDir) {
                 if (job.account.dislike) {
                     await watcherContext.dislike()
                 }
+                
+                if (job.account.subscribe) {
+                    await watcherContext.subscribe()
+                }
 
                 if (job.account.comment) {
                     await watcherContext.comment(job.account.comment)

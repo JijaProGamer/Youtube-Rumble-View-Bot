@@ -125,8 +125,10 @@
 
 				likePercent: 50,
 				dislikePercent: 100,
+				subscribePercent: 0,
 				likeAt: [25, 75],
 				dislikeAt: [25, 75],
+				subscribeAt: [25, 75],
 				commentAt: [25, 75]
 			});
 
@@ -499,6 +501,18 @@
 									<p class="setting_info">When should each account dislike?</p>
 								{/if}
 							</div>
+							
+							<div class="setting_div">
+								<div class="same_line">
+									<h2 class="setting_name">Subscribe at:</h2>
+
+									<Slider max="100" bind:value={video.subscribeAt} range order />
+								</div>
+
+								{#if index == 0}
+									<p class="setting_info">When should each account subscribe?</p>
+								{/if}
+							</div>
 
 							<div class="setting_div">
 								<div class="same_line">
@@ -544,6 +558,24 @@
 
 								{#if index == 0}
 									<p class="setting_info">What is the chance of the bot disliking the video?</p>
+								{/if}
+							</div>
+
+							<div class="setting_div">
+								<div class="same_line">
+									<h2 class="setting_name">Subscribe percent:</h2>
+
+									<input
+										class="setting_text"
+										type="number"
+										min="0"
+										max="100"
+										bind:value={video.subscribePercent}
+									/>
+								</div>
+
+								{#if index == 0}
+									<p class="setting_info">What is the chance of the bot subscribe the video?</p>
 								{/if}
 							</div>
 
